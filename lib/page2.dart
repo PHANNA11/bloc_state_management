@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
-import 'bloc/counter_bloc.dart';
+import 'controller/counter_controller.dart';
 
 class Page2 extends StatefulWidget {
   Page2({super.key});
@@ -13,47 +11,48 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
+  final controller = Get.put(CounterController());
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CounterBloc, CounterState>(
-      builder: (contextB, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Page 2'),
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
-                Text(
-                  '${state.number}',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Page 2'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
             ),
-          ),
-          floatingActionButton: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FloatingActionButton(
-                onPressed: () =>
-                    contextB.read<CounterBloc>().add(DecrementEvent()),
-                tooltip: 'Decrement',
-                child: const Icon(Icons.remove),
+            Obx(
+              () => Text(
+                '${controller.number.value}',
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-              FloatingActionButton(
-                onPressed: () =>
-                    contextB.read<CounterBloc>().add(IncrementEvent()),
-                tooltip: 'Increment',
-                child: const Icon(Icons.add),
-              ),
-            ],
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              controller.decrement();
+            },
+            tooltip: 'Decrement',
+            child: Icon(Icons.remove),
           ),
-        );
-      },
+          FloatingActionButton(
+            onPressed: () async {
+              controller.increment();
+            },
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+        ],
+      ),
     );
   }
 }
